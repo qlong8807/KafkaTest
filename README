@@ -1,0 +1,31 @@
+1.kafka集群由多个kafka实例组成，每个实例(server)称为broker。
+	无论是kafka集群，还是producer和consumer都依赖于zookeeper来保证系统可用性集群保存一些meta信息。
+2.一个Topic可以认为是一类消息，每个topic将被分成多个partition(区),每个partition在存储层面是append log文件。
+	每条消息在文件中的位置称为offset（偏移量），offset为一个long型数字，它是唯一标记一条消息。
+	kafka并没有提供其他额外的索引机制来存储offset，因为在kafka中几乎不允许对消息进行“随机读写”。
+3.kafka和mq的不同在于，kafka不会立即删除被消费的消息，会根据配置保留一段时间后删除，这样可以减少磁盘IO。
+4.消息offset的保存和使用由consumer控制，consumer可以重置offset的值，这样就可以不按顺序读取消息。
+5.leader负责所有的读写操作,如果leader失效,那么将会有其他follower来接管(成为新的leader);
+	follower只是单调的和leader跟进,同步消息即可。
+6.Producer将消息发布到指定的Topic中,同时Producer也能决定将此消息归属于哪个partition;
+7.kafka只能保证一个partition中的消息被某个consumer消费时,消息是顺序的.事实上,从Topic角度来说,消息仍不是有序的.
+8.kafka的性能瓶颈主要在磁盘IO，和网络IO。所以尽量使用批量压缩传输/存储。
+
+消息传送机制
+    对于JMS实现,消息传输担保非常直接:有且只有一次(exactly once).在kafka中稍有不同:
+    1) at most once: 最多一次,这个和JMS中"非持久化"消息类似.发送一次,无论成败,将不会重发.
+    2) at least once: 消息至少发送一次,如果消息未能接受成功,可能会重发,直到接收成功.
+    3) exactly once: 消息只会发送一次.
+    at most once: 消费者fetch消息,然后保存offset,然后处理消息;当client保存offset之后,但是在消息处理过程中出现了异常,导致部分消息未能继续处理.那么此后"未处理"的消息将不能被fetch到,这就是"at most once".
+    at least once: 消费者fetch消息,然后处理消息,然后保存offset.如果消息处理成功之后,但是在保存offset阶段zookeeper异常导致保存操作未能执行成功,这就导致接下来再次fetch时可能获得上次已经处理过的消息,这就是"at least once"，原因offset没有及时的提交给zookeeper，zookeeper恢复正常还是之前offset状态.
+    exactly once: kafka中并没有严格的去实现(基于2阶段提交,事务),我们认为这种策略在kafka中是没有必要的.
+
+kafka下载后启动前一定要配置当前IP，默认的是localhost，这样使用的时候会提示超时异常。
+config/server.properties(版本：kafka_2.11-0.10.0.0)
+	advertised.listeners=PLAINTEXT://192.168.125.134:9092
+	zookeeper.connect=192.168.125.134:2181
+
+也可以尝试使用kafka api的java版本，之前一般使用的是scala版本
+java版本可以参考：
+http://kafka.apache.org/0100/javadoc/index.html?org/apache/kafka/clients/producer/KafkaProducer.html
+http://blog.csdn.net/beitiandijun/article/details/44017709
