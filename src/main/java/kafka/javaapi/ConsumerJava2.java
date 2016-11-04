@@ -15,7 +15,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
  * @date 2016年7月6日
  * 
  */
-public class ConsumerJava extends Thread{
+public class ConsumerJava2 extends Thread{
 
 	private String broker_url;
 	private String topic;
@@ -34,12 +34,12 @@ public class ConsumerJava extends Thread{
 	@Override
 	public void run() {
 		KafkaConsumer<String,String> consumer = createConsumer();
-		System.out.println("consumer 创建完成...");
+		System.out.println("consumer2 创建完成...");
 		consumer.subscribe(Arrays.asList(topic));
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(100);
             for (ConsumerRecord<String, String> record : records)
-                System.out.printf("收到：offset = %d, key = %s, value = %s\n", record.offset(), record.key(), record.value());
+                System.out.printf("2收到：offset = %d, key = %s, value = %s\n", record.offset(), record.key(), record.value());
         }
 	}
 

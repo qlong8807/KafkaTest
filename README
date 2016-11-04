@@ -1,4 +1,6 @@
 推荐用Java客户端，而不要用Scala客户端。
+如果多个consumer的groupId相同，则会均分同一个topic消息。
+如果多个consumer的groupId不同，则每个consumer都会收到一份消息。
 Kafka安装
 1.官网下载，解压。
 2.如果使用kafka自带的zookeeper，则修改config/zookeeper.properties文件中zookeeper的最大连接数maxClientCnxns=100。
