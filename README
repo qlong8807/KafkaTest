@@ -1,3 +1,29 @@
+推荐用Java客户端，而不要用Scala客户端。
+Kafka安装
+1.官网下载，解压。
+2.如果使用kafka自带的zookeeper，则修改config/zookeeper.properties文件中zookeeper的最大连接数maxClientCnxns=100。
+2.修改config/server.properties，
+	添加advertised.host.name=192.168.125.128，如果不添加该项，则本地shell测试无问题，但是Java客户端会报错。
+	修改zookeeper.connect=192.168.125.128:2181,改为zookeeper的地址。
+启动：
+bin/zookeeper-server-start.sh config/zookeeper.properties &
+bin/kafka-server-start.sh config/server.properties &
+在服务器上查看某topic的详细信息：
+bin/kafka-topics.sh --describe --zookeeper hadoop0:2181,hadoop1:2181,hadoop2:2181 --topic mytest
+创建生产者和消费者：
+bin/kafka-console-producer.sh --broker-list hadoop1:9092 --topic mytest
+bin/kafka-console-consumer.sh --zookeeper hadoop1:2181 --topic mytest --from-beginning
+Kafka集群配置：
+--------------------------------------------start------------------------------------------------
+broker.id=0 #不同实例不同id
+#如果在同一台机子上，设置不同的端口值
+port=9092 
+host.name=hadoop0 #当前主机名或IP
+log.dirs=/usr/softinstall/kafka/kafka-logs-0
+#zookeeper集群中主机名和其端口号
+zookeeper.connect=hadoop0:2181,hadoop1:2181,hadoop2:2181
+---------------------------------------------end-----------------------------------------------
+
 1.kafka集群由多个kafka实例组成，每个实例(server)称为broker。
 	无论是kafka集群，还是producer和consumer都依赖于zookeeper来保证系统可用性集群保存一些meta信息。
 2.一个Topic可以认为是一类消息，每个topic将被分成多个partition(区),每个partition在存储层面是append log文件。
@@ -29,3 +55,4 @@ config/server.properties(版本：kafka_2.11-0.10.0.0)
 java版本可以参考：
 http://kafka.apache.org/0100/javadoc/index.html?org/apache/kafka/clients/producer/KafkaProducer.html
 http://blog.csdn.net/beitiandijun/article/details/44017709
+

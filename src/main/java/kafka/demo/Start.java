@@ -10,8 +10,9 @@ package kafka.demo;
  */
 public class Start {
 	public static void main(String[] args) {
-		String brokerUrl = "192.168.125.134:9092";
-		String zookeeperUrl = "192.168.125.134:2181";
+		String brokerUrl = "192.168.0.92:9092";
+//		String zookeeperUrl = "centos01:2181,centos02:2181,centos03:2181";
+		String zookeeperUrl = "192.168.0.92:2181";
 		ConsumerTest c = new ConsumerTest();
 		c.setTopic("topic1");
 		c.setZooUrl(zookeeperUrl);
@@ -23,5 +24,11 @@ public class Start {
 		p.setBrokerUrl(brokerUrl);
 		p.start();
 		System.out.println("=====================");
+//		ProducerTest2 p2 = new ProducerTest2();
+//		p2.setTopic("topic1");
+//		p2.setZooUrl(zookeeperUrl);
+//		p2.setBrokerUrl(brokerUrl);
+//		p2.start();
+//		System.out.println("=====================");
 	}
 }

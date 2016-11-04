@@ -18,9 +18,9 @@ package kafka.examples;
 
 public class KafkaProperties {
     public static final String TOPIC = "topic1";
-    public static final String KAFKA_SERVER_URL = "192.168.0.48";
-    public static final String ZOOKEEPER_URL = "192.168.0.48:2181";
-    public static final String KAFKA_URL = "192.168.0.48:9092";
+    public static final String KAFKA_SERVER_URL = "192.168.125.128";
+    public static final String ZOOKEEPER_URL = "192.168.125.128:2181";
+    public static final String KAFKA_URL = "192.168.125.128:9092";
 //    public static final String KAFKA_SERVER_URL = "192.168.125.134";
 //    public static final String ZOOKEEPER_URL = "192.168.125.134:2181";
 //    public static final String KAFKA_URL = "192.168.125.134:9092";
